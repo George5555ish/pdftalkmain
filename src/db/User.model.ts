@@ -31,6 +31,8 @@ const userSchema = new mongoose.Schema({
         type: Date,
         alias: 'stripe_current_period_end'  // Maps to 'stripe_current_period_end' in MongoDB
     }
+}, {
+    timestamps: true
 })
 
 export default mongoose.models.User || mongoose.model('User', userSchema)

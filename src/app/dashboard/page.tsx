@@ -6,6 +6,7 @@ import {
 } from '@kinde-oss/kinde-auth-nextjs/server'
 import User from "@/db/User.model"
 import { redirect } from 'next/navigation'
+import DashboardComponent from '@/components/Dashboard'
 async function Dashboard() {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
@@ -19,7 +20,7 @@ async function Dashboard() {
 
   // const subscriptionPlan = await getUserSubscriptionPlan()
   return (
-    <div>{user.email}</div>
+    <DashboardComponent user={user} subscriptionPlan={{isSubscribed: false}} />
   )
 }
 

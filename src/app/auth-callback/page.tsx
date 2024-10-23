@@ -28,7 +28,8 @@ useEffect(() => {
   else if (error) {
       if (error.data?.code === 'UNAUTHORIZED') {
           router.push('/sign-in')
-      }
+      } 
+      
   }  
 }, [data, origin, error]);
 

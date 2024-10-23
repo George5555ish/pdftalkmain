@@ -45,7 +45,7 @@ export function constructMetadata({
       title,
       description,
       images: [image],
-      creator: "@joshtriedcoding"
+      creator: "@jg"
     },
     icons,
     metadataBase: new URL('https://pdftalk-jet.vercel.app'),
