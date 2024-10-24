@@ -7,9 +7,10 @@ import {
 import { TRPCError } from '@trpc/server'
 import User from '@/db/User.model'
 import File from '@/db/File.model'
-import { z } from 'zod'
-// import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
+import Message from '@/db/Message.model'
+import { z } from 'zod' 
 import { absoluteUrl } from '@/lib/utils'
+import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query'
 // import {
 //   getUserSubscriptionPlan,
 //   stripe,
@@ -105,54 +106,54 @@ export const appRouter = router({
       }
     ),
 
-    // getFileMessages: privateProcedure
-    //   .input(
-    //     z.object({
-    //       limit: z.number().min(1).max(100).nullish(),
-    //       cursor: z.string().nullish(),
-    //       fileId: z.string(),
-    //     })
-    //   )
-    //   .query(async ({ ctx, input }) => {
-    //     const { userId } = ctx
-    //     const { fileId, cursor } = input
-    //     const limit = input.limit ?? INFINITE_QUERY_LIMIT
+    getFileMessages: privateProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        fileId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { userId } = ctx
+      const { fileId, cursor } = input
+      const limit = input.limit ?? INFINITE_QUERY_LIMIT
 
-    //     const file = await File.findOne({ 
-    //         id: fileId,
-    //         userId, 
-    //     })
+      const file = await File.findOne({ 
+          _id: fileId,
+          userId, 
+      })
 
-    //     if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
+      if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
 
-    //     const messages = await db.message.findMany({
-    //       take: limit + 1,
-    //       where: {
-    //         fileId,
-    //       },
-    //       orderBy: {
-    //         createdAt: 'desc',
-    //       },
-    //       cursor: cursor ? { id: cursor } : undefined,
-    //       select: {
-    //         id: true,
-    //         isUserMessage: true,
-    //         createdAt: true,
-    //         text: true,
-    //       },
-    //     })
+      const messages = await Message.find({
+        take: limit + 1,
+        where: {
+          fileId,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+        select: {
+          id: true,
+          isUserMessage: true,
+          createdAt: true,
+          text: true,
+        },
+      })
 
-    //     let nextCursor: typeof cursor | undefined = undefined
-    //     if (messages.length > limit) {
-    //       const nextItem = messages.pop()
-    //       nextCursor = nextItem?.id
-    //     }
+      let nextCursor: typeof cursor | undefined = undefined
+      if (messages.length > limit) {
+        const nextItem = messages.pop()
+        nextCursor = nextItem?.id
+      }
 
-    //     return {
-    //       messages,
-    //       nextCursor,
-    //     }
-    //   }),
+      return {
+        messages,
+        nextCursor,
+      }
+    }),
 
     getFileUploadStatus: privateProcedure
       .input(z.object({ fileId: z.string() }))
