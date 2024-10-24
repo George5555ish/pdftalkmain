@@ -6,3 +6,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 # Nextjs
 # Kinde (Authentication)
 # MongoDB
+# Upload thing (AWS S3 Wrapper)
+# Pinecone (Vector storage for pdf files)
+# Open AI
