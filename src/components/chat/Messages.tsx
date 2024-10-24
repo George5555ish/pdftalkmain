@@ -77,7 +77,7 @@ const Messages = ({ fileId }: MessagesProps) => {
                 isNextMessageSamePerson={
                   isNextMessageSamePerson
                 }
-                key={message.id}
+                key={message._id}
               />
             )
           } else
@@ -87,7 +87,7 @@ const Messages = ({ fileId }: MessagesProps) => {
                 isNextMessageSamePerson={
                   isNextMessageSamePerson
                 }
-                key={message.id}
+                key={message._id}
               />
             )
         })

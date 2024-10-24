@@ -5,10 +5,11 @@ import {
   type FileRouter,
 } from 'uploadthing/next'
 
-// import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
-// import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-// import { PineconeStore } from 'langchain/vectorstores/pinecone'
-// import { getPineconeClient } from '@/lib/pinecone'
+import {PDFLoader} from '@langchain/community/document_loaders/fs/pdf'
+import {OpenAIEmbeddings} from '@langchain/openai'
+import { getPineconeClient } from '@/lib/pinecone'
+import { PineconeStore } from '@langchain/pinecone'
+import { Index, RecordMetadata } from '@pinecone-database/pinecone' 
 // import { getUserSubscriptionPlan } from '@/lib/stripe'
 // import { PLANS } from '@/config/stripe'
 
@@ -46,7 +47,7 @@ const onUploadComplete = async ({
 
   if (isFileExist) return
 
-  await File.create({
+  const createdFile = await File.create({
     key: file.key,
     name: file.name,
     userId: metadata.userId,
@@ -57,16 +58,16 @@ const onUploadComplete = async ({
 
   try {
     const response = await fetch(
-      `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`
+      file.url
     )
 
     const blob = await response.blob()
 
-    // const loader = new PDFLoader(blob)
+    const loader = new PDFLoader(blob)
 
-    // const pageLevelDocs = await loader.load()
+    const pageLevelDocs = await loader.load()
 
-    // const pagesAmt = pageLevelDocs.length
+    const pagesAmt = pageLevelDocs.length
 
     const { subscriptionPlan } = metadata
     const { isSubscribed } = subscriptionPlan
@@ -91,22 +92,23 @@ const onUploadComplete = async ({
     //   } )
     // }
 
-    // vectorize and index entire document
-    // const pinecone = await getPineconeClient()
-    // const pineconeIndex = pinecone.Index('quill')
+    // vectorize and index entire document 
+    const pinecone = await getPineconeClient()
+    const pineconeIndex = pinecone.Index('pdftalk') as any; // langchain and pinecone types are incompatible
 
-    // const embeddings = new OpenAIEmbeddings({
-    //   openAIApiKey: process.env.OPENAI_API_KEY,
-    // })
+    console.log('pineconeIndex',pineconeIndex)
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    })
 
-    // await PineconeStore.fromDocuments(
-    //   pageLevelDocs,
-    //   embeddings,
-    //   {
-    //     pineconeIndex,
-    //     namespace: createdFile.id,
-    //   }
-    // )
+    await PineconeStore.fromDocuments(
+      pageLevelDocs,
+      embeddings,
+      {
+        pineconeIndex,
+        namespace: createdFile._id,
+      }
+    )
 
     await File.findOneAndUpdate({
       key: file.key,
@@ -114,6 +116,9 @@ const onUploadComplete = async ({
       uploadStatus: 'SUCCESS',
     }, { new: true })
   } catch (err) {
+
+    console.log('there was an error')
+    console.info(err) 
     await File.findOneAndUpdate({
       key: file.key,
     }, {

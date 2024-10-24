@@ -30,6 +30,8 @@ const Page = async ({ params }: PageProps) => {
 
   if (!file) notFound()
 
+    console.log('file')
+    console.log(file)
 //   const plan = await getUserSubscriptionPlan()
 
   return (
@@ -44,7 +46,7 @@ const Page = async ({ params }: PageProps) => {
         </div>
 
         <div className='shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0'>
-          <ChatWrapper isSubscribed={false} fileId={file._id} />
+          <ChatWrapper isSubscribed={false} fileId={JSON.parse(JSON.stringify(file._id))} />
         </div>
       </div>
     </div>

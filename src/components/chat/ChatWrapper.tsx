@@ -23,13 +23,13 @@ const ChatWrapper = ({
       {
         fileId,
       }, 
-    //   {
-    //     refetchInterval: (data:any) =>
-    //       data?.status === 'SUCCESS' ||
-    //       data?.status === 'FAILED'
-    //         ? false
-    //         : 500,
-    //   }
+      // {
+      //   refetchInterval: (data:any) =>
+      //     data?.status === 'SUCCESS' ||
+      //     data?.status === 'FAILED'
+      //       ? false
+      //       : 500,
+      // }
     )
 
   if (isLoading)

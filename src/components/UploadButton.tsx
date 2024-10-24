@@ -15,6 +15,7 @@ import { useUploadThing } from '@/lib/uploadthing'
 import { useToast } from '../hooks/use-toast'
 import { trpc } from '@/app/_trpc/client'
 import { useRouter } from 'next/navigation'
+import { DialogTitle } from '@radix-ui/react-dialog'
 
 const UploadDropzone = ({
   isSubscribed,
@@ -188,6 +189,7 @@ const UploadButton = ({
       </DialogTrigger>
 
       <DialogContent> 
+        <DialogTitle>Upload PDF</DialogTitle>
         <UploadDropzone isSubscribed={false} />
       </DialogContent>
     </Dialog>
