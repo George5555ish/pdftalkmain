@@ -10,7 +10,7 @@ import { PineconeStore } from '@langchain/pinecone'
 import { NextRequest } from 'next/server'
 
 import { OpenAIStream, StreamingTextResponse } from 'ai'
-import { streamText } from 'ai';
+// import { streamText } from 'ai';
 export const POST = async (req: NextRequest) => {
   // endpoint for asking a question to a pdf file
 
@@ -21,8 +21,8 @@ export const POST = async (req: NextRequest) => {
 
   const { id: userId } = user
 
-  console.log('user')
-  console.log(user)
+  // console.log('user')
+  // console.log(user)
 
   if (!userId)
     return new Response('Unauthorized', { status: 401 })

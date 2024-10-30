@@ -50,7 +50,7 @@ const DashboardComponent = ({subscriptionPlan,user}: PageProps) => {
     <main className='mx-auto max-w-7xl md:p-10'>
 
         <div className='flex flex-row items-center'>
-            <h2>Hello</h2> <span>{user.given_name}</span>
+            <h2>Hello </h2> <span>{user.given_name}</span>
         </div>
       <div className='mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0'>
         <h1 className='mb-3 font-bold text-5xl text-gray-900'>
@@ -70,7 +70,7 @@ const DashboardComponent = ({subscriptionPlan,user}: PageProps) => {
                 new Date(a.createdAt).getTime()
             )
             .map((file) => {
-                console.log('date  ')
+                console.log('date')
                 console.log(file)
                 return (
                     <li

@@ -9,9 +9,9 @@ import {PDFLoader} from '@langchain/community/document_loaders/fs/pdf'
 import {OpenAIEmbeddings} from '@langchain/openai'
 import { getPineconeClient } from '@/lib/pinecone'
 import { PineconeStore } from '@langchain/pinecone'
-import { Index, RecordMetadata } from '@pinecone-database/pinecone' 
-// import { getUserSubscriptionPlan } from '@/lib/stripe'
-// import { PLANS } from '@/config/stripe'
+// import { Index, RecordMetadata } from '@pinecone-database/pinecone' 
+import { getUserSubscriptionPlan } from '@/lib/stripe'
+import { PLANS } from '@/config/stripe'
 
 const f = createUploadthing()
 
@@ -21,8 +21,8 @@ const middleware = async () => {
 
   if (!user || !user.id) throw new Error('Unauthorized')
 
-  //   const subscriptionPlan = await getUserSubscriptionPlan()
-  const subscriptionPlan = { isSubscribed: false }
+    const subscriptionPlan = await getUserSubscriptionPlan()
+ 
   console.log('validated')
   return { subscriptionPlan, userId: user.id }
 }
@@ -72,25 +72,25 @@ const onUploadComplete = async ({
     const { subscriptionPlan } = metadata
     const { isSubscribed } = subscriptionPlan
 
-    // const isProExceeded =
-    //   pagesAmt >
-    //   PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf
-    // const isFreeExceeded =
-    //   pagesAmt >
-    //   PLANS.find((plan) => plan.name === 'Free')!
-    //     .pagesPerPdf
+    const isProExceeded =
+      pagesAmt >
+      PLANS.find((plan) => plan.name === 'Pro')!.pagesPerPdf
+    const isFreeExceeded =
+      pagesAmt >
+      PLANS.find((plan) => plan.name === 'Free')!
+        .pagesPerPdf
 
-    // if (
-    //   (isSubscribed && isProExceeded) ||
-    //   (!isSubscribed && isFreeExceeded)
-    // ) {
-    // await File.updateOne({ 
-    //     uploadStatus: 'FAILED',
-    //   },
-    //    {
-    //     id: createdFile.id,
-    //   } )
-    // }
+    if (
+      (isSubscribed && isProExceeded) ||
+      (!isSubscribed && isFreeExceeded)
+    ) {
+    await File.updateOne({ 
+        uploadStatus: 'FAILED',
+      },
+       {
+        id: createdFile.id,
+      } )
+    }
 
     // vectorize and index entire document 
     const pinecone = await getPineconeClient()
