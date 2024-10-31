@@ -9,10 +9,17 @@ import {
 import { ArrowRight } from 'lucide-react'
 import UserAccountNav from './UserAccountNav'
 // import MobileNav from './MobileNav'
-
+import { redirect } from 'next/navigation'
+import { trpcDbUtils } from '@/trpc/utils'
 const Navbar = async() => {
   const { getUser } = getKindeServerSession()
-  const user = await getUser()
+  const user = await getUser() 
+  if (!user || !user.id) redirect('/auth-callback?origin=dashboard')
+
+  const dbUser = await trpcDbUtils.findOneUser(user.id)
+
+  if (!dbUser) redirect('/auth-callback?origin=dashboard')
+ 
 
   return (
     <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition-all'>
@@ -65,9 +72,9 @@ const Navbar = async() => {
 
                 <UserAccountNav
                   name={
-                    !user.given_name || !user.family_name
+                    !dbUser.given_name 
                       ? 'Your Account'
-                      : `${user.given_name}`
+                      : `${dbUser.given_name}`
                   }
                   email={user.email ?? ''}
                   imageUrl={user.picture ?? ''}
