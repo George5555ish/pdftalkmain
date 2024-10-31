@@ -14,13 +14,13 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { Button } from './ui/button'
 import { useState } from 'react'
-import { userAgent } from 'next/server'
+// import { userAgent } from 'next/server'
 import "react-loading-skeleton/dist/skeleton.css";
-// import { getUserSubscriptionPlan } from '@/lib/stripe'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
 
 interface PageProps {
-//   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
-  subscriptionPlan: any
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+  // subscriptionPlan: any
   user: any
 }
 
@@ -57,7 +57,7 @@ const DashboardComponent = ({subscriptionPlan,user}: PageProps) => {
           My Files
         </h1>
 
-        <UploadButton isSubscribed={subscriptionPlan} />
+        <UploadButton isSubscribed={subscriptionPlan.isSubscribed} />
       </div>
 
       {/* display all user files */}

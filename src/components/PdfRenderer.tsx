@@ -16,7 +16,7 @@ import { useToast } from '../hooks/use-toast'
 import { useResizeDetector } from 'react-resize-detector'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { useEffect, useState } from 'react'
+import {   useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'

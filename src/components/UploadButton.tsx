@@ -190,7 +190,7 @@ const UploadButton = ({
 
       <DialogContent> 
         <DialogTitle>Upload PDF</DialogTitle>
-        <UploadDropzone isSubscribed={false} />
+        <UploadDropzone isSubscribed={isSubscribed} />
       </DialogContent>
     </Dialog>
   )
