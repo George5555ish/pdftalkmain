@@ -89,7 +89,7 @@ export const appRouter = router({
         await stripe.checkout.sessions.create({
           success_url: billingUrl,
           cancel_url: billingUrl,
-          payment_method_types: ['card', 'paypal'],
+          payment_method_types: ['card', 'paypal', 'samsung_pay', 'revolut_pay'],
           mode: 'subscription',
           billing_address_collection: 'auto',
           line_items: [

@@ -11,7 +11,16 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
 export async function getUserSubscriptionPlan() {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
-
+console.log('user')
+console.log(user)
+if (!user) {
+  return {
+    ...PLANS[0],
+    isSubscribed: false,
+    isCanceled: false,
+    stripeCurrentPeriodEnd: null,
+  }
+}
   if (!user.id) {
     return {
       ...PLANS[0],
