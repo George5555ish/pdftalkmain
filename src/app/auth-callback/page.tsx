@@ -22,6 +22,7 @@ useEffect(() => {
       if (success) {
           // user is synced to db
           console.log('Data fetched successfully:', data);
+          console.log('isLoading',isLoading)
           router.push(origin ? `/${origin}` : '/dashboard')
       }
   }

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev-push":"git add . & git commit -m 'changes' & git push"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.68",

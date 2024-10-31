@@ -1,12 +1,13 @@
 import React from 'react'
 import {
-  LoginLink,
-  RegisterLink,
+  // LoginLink,
+  // RegisterLink,
   getKindeServerSession,
 } from '@kinde-oss/kinde-auth-nextjs/server'
 import User from "@/db/User.model"
 import { redirect } from 'next/navigation'
 import DashboardComponent from '@/components/Dashboard'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
 async function Dashboard() {
   const { getUser } = getKindeServerSession()
   const user = await getUser()
@@ -18,9 +19,9 @@ async function Dashboard() {
 
   if (!dbUser) redirect('/auth-callback?origin=dashboard')
 
-  // const subscriptionPlan = await getUserSubscriptionPlan()
+  const subscriptionPlan = await getUserSubscriptionPlan()
   return (
-    <DashboardComponent user={user} subscriptionPlan={{isSubscribed: false}} />
+    <DashboardComponent user={user} subscriptionPlan={ subscriptionPlan} />
   )
 }
 
