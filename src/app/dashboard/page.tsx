@@ -16,6 +16,7 @@ async function Dashboard() {
 
   const dbUser = await trpcDbUtils.findOneUser(user.id)
 
+  
   if (!dbUser) redirect('/auth-callback?origin=dashboard')
 
   const subscriptionPlan = await getUserSubscriptionPlan()
