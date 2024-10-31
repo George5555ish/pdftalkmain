@@ -9,6 +9,9 @@
     "@next/next/no-page-custom-font": "off",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
+    "react/no-unused-vars": "off", 
+    "@next/next/no-unused-vars": "off",
+    "react/no-empty-object-type": "off", 
     "no-empty-object-type": "off",
     "@typescript-eslint/no-empty-object-type": ["error"]
   }
