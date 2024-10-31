@@ -72,8 +72,8 @@ const Navbar = async() => {
                       ? 'Your Account'
                       : `${user.given_name}`
                   }
-                  email={user.email ?? ''}
-                  imageUrl={user.picture ?? ''}
+                  email={user ?user.email:''}
+                  imageUrl={user ?user.picture: ''}
                 />
               </>
             )}
