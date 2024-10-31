@@ -14,7 +14,6 @@ import { trpcDbUtils } from '@/trpc/utils'
 const Navbar = async() => {
   const { getUser } = getKindeServerSession()
   const user = await getUser() 
-  if (!user || !user.id) redirect('/')
  
  
 
@@ -69,7 +68,7 @@ const Navbar = async() => {
 
                 <UserAccountNav
                   name={
-                    !user.given_name 
+                    !user
                       ? 'Your Account'
                       : `${user.given_name}`
                   }
