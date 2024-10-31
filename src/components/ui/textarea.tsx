@@ -4,7 +4,7 @@ import TextareaAutosize, {
 } from 'react-textarea-autosize'
 
 import { cn } from '@/lib/utils'
-
+/* eslint-disable-next-line @typescript-eslint/no-empty-interface */
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
