@@ -26,7 +26,7 @@ export const trpcDbUtils = {
     },
     findAllFiles: async (userId:string ) => {
                 const {db} = await connectToDatabase()
-        return await db.collection('files').find({kinde_id:userId}).toArray();
+        return await db.collection('files').find({userId}).toArray();
     },
     findAndSortAndLimit: async (  fileId: string, limit: number) => {
                 const {db} = await connectToDatabase()
