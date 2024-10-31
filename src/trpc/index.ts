@@ -17,26 +17,26 @@ import {
   stripe,
 } from '@/lib/stripe'
 import { PLANS } from '@/config/stripe'
+import connectToDatabase from '@/db'
 // import { PLANS } from '@/config/stripe'
-
+import { trpcDbUtils } from './utils'
+import { ObjectId } from 'mongodb'
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession()
     const user = await getUser()
-
+    const { db } = await connectToDatabase()
     if (!user.id || !user.email)
       throw new TRPCError({ code: 'UNAUTHORIZED' })
 
     // check if the user is in the database
-    const dbUser = await User.findOne({
-      kinde_id: user.id
-    })
+    const dbUser = await trpcDbUtils.findOneUser( user.id)
 
     if (!dbUser) {
       // create user in db
       //TODO: INVESTIGATE THIS PART IF A USER TRIES TO CREATE NEW USER 
       // OF THE SAME EMAIL, ERROR HANDLING SHOULD BE WORKED ON
-      await User.create({
+      await trpcDbUtils.createOneUser( {
         kinde_id: user.id,
         email: user.email,
         given_name: user.given_name
@@ -47,24 +47,22 @@ export const appRouter = router({
   }),
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
     const { userId } = ctx //kinde id is here, not _id
-    return await File.find({
-      userId,
-    })
+
+    const { db } = await connectToDatabase()
+    return await trpcDbUtils.findAllFiles()
   }),
 
-  
+
   createStripeSession: privateProcedure.mutation(
     async ({ ctx }) => {
       const { userId } = ctx
-
+      const { db } = await connectToDatabase()
       const billingUrl = absoluteUrl('/dashboard/billing')
 
       if (!userId)
         throw new TRPCError({ code: 'UNAUTHORIZED' })
 
-      const dbUser = await User.findOne({ 
-          kinde_id: userId, 
-      })
+      const dbUser = await trpcDbUtils.findOneUser( userId)
 
       if (!dbUser)
         throw new TRPCError({ code: 'UNAUTHORIZED' })
@@ -108,62 +106,7 @@ export const appRouter = router({
       return { url: stripeSession.url }
     }
   ),
-  // createStripeSession: privateProcedure.mutation(
-  //   async ({ ctx }) => {
-  //     const { userId } = ctx
 
-  //     const billingUrl = absoluteUrl('/dashboard/billing')
-
-  //     if (!userId)
-  //       throw new TRPCError({ code: 'UNAUTHORIZED' })
-
-  //     const dbUser = await User.findOne({
-  //       id: userId,
-  //     })
-
-  //     if (!dbUser)
-  //       throw new TRPCError({ code: 'UNAUTHORIZED' })
-
-  //     const subscriptionPlan =
-  //       await getUserSubscriptionPlan()
-
-  //     if (
-  //       subscriptionPlan.isSubscribed &&
-  //       dbUser.stripeCustomerId
-  //     ) {
-  //       const stripeSession =
-  //         await stripe.billingPortal.sessions.create({
-  //           customer: dbUser.stripeCustomerId,
-  //           return_url: billingUrl,
-  //         })
-
-  //       return { url: stripeSession.url }
-  //     }
-
-  //     //At this point, the user wants to buy the product newly
-  //     const stripeSession =
-  //       await stripe.checkout.sessions.create({
-  //         success_url: billingUrl,
-  //         cancel_url: billingUrl,
-  //         payment_method_types: ['card', 'paypal', 'samsung_pay', 'revolut_pay'],
-  //         mode: 'subscription',
-  //         billing_address_collection: 'auto',
-  //         line_items: [
-  //           {
-  //             price: PLANS.find(
-  //               (plan) => plan.name === 'Pro'
-  //             )?.price.priceIds.test,
-  //             quantity: 1,
-  //           },
-  //         ],
-  //         metadata: {
-  //           userId: userId,
-  //         },
-  //       })
-
-  //     return { url: stripeSession.url }
-  //   }
-  // ),
 
   getFileMessages: privateProcedure
     .input(
@@ -184,18 +127,13 @@ export const appRouter = router({
       })
 
       if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
-
-      const messages = await Message.find(
-
-        {
-          fileId,
-        }
-      ).sort({ createdAt: -1 }).limit(limit + 1)
+      const { db } = await connectToDatabase()
+      const messages = await trpcDbUtils.findAndSortAndLimit( fileId, limit)
 
       let nextCursor: typeof cursor | undefined = undefined
       if (messages.length > limit) {
         const nextItem = messages.pop()
-        nextCursor = nextItem?._id
+        nextCursor = nextItem?._id.toString()
       }
 
       return {
@@ -207,10 +145,11 @@ export const appRouter = router({
   getFileUploadStatus: privateProcedure
     .input(z.object({ fileId: z.string() }))
     .query(async ({ input, ctx }) => {
-      const file = await File.findOne({
-        id: input.fileId,
-        userId: ctx.userId,
-      })
+      const { db } = await connectToDatabase()
+      const file = await trpcDbUtils.findOneFile(
+        
+        input.fileId,
+        ctx.userId,)
 
       if (!file) return { status: 'PENDING' as const }
 
@@ -221,11 +160,11 @@ export const appRouter = router({
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx
-
-      const file = await File.findOne({
-        key: input.key,
+      const { db } = await connectToDatabase()
+      const file = await trpcDbUtils.findOneFileByKey(
+        input.key,
         userId,
-      })
+      )
 
       if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
 
@@ -236,17 +175,15 @@ export const appRouter = router({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx
-
-      const file = await File.findOne({
-        _id: input.id,
-        userId,
-      })
-
+      const { db } = await connectToDatabase()
+      const file = await db.collection('files').findOne({
+        _id: new ObjectId(input.id),
+        userId
+      });
       if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
 
-      await File.deleteOne({
-        _id: input.id,
-      })
+      await trpcDbUtils.deleteOneFile(
+         input.id)
       await utapi.deleteFiles(input.id);
 
       return file

@@ -16,7 +16,7 @@ if (!cached) {
 
 async function dbConnect() {
     if (cached.conn) {
-        return cached.conn
+      return { conn: cached.conn, db: cached.conn.connection.db };
     }
     if (!cached.promise) {
         const opts = {
@@ -34,7 +34,7 @@ async function dbConnect() {
         throw e
     }
 
-    return cached.conn
+    return { conn: cached.conn, db: cached.conn.connection.db };
 }
 
 export default dbConnect

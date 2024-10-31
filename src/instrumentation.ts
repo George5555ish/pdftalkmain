@@ -1,6 +1,3 @@
-import connect from '@/db'
-
-export async function register() {
-    // await connect()
+export async function register() { 
     console.log('testing if it is instrumentation')
 }
