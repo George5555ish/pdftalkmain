@@ -30,7 +30,7 @@ const Navbar = async() => {
           {/* <MobileNav isAuth={!!user} /> */}
 
           <div className='hidden items-center space-x-4 sm:flex'>
-            {user ? (
+            {!user ? (
               <>
                 <Link
                   href='/pricing'
