@@ -1,12 +1,13 @@
-import User from '@/db/User.model'
 import { stripe } from '@/lib/stripe'
 import { headers } from 'next/headers'
 import type Stripe from 'stripe'
+import connectToDatabase from '@/db';
 
 export async function POST(request: Request) {
     const body = await request.text()
     const signature = headers().get('Stripe-Signature') ?? ''
 
+    const {db} = await connectToDatabase()
     let event: Stripe.Event
 
     try {
@@ -37,20 +38,30 @@ export async function POST(request: Request) {
             await stripe.subscriptions.retrieve(
                 session.subscription as string
             )
-
-        await User.updateOne(
-            {
-                kinde_id: session.metadata.userId,
-            },
-            {
-                stripeSubscriptionId: subscription.id,
-                stripeCustomerId: subscription.customer as string,
-                stripePriceId: subscription.items.data[0]?.price.id,
-                stripeCurrentPeriodEnd: new Date(
-                    subscription.current_period_end * 1000
-                ),
-            },
-        )
+            await db.collection('users').updateOne(
+                { kinde_id: session.metadata.userId, }, // Filter
+                { $set: {
+                    stripeSubscriptionId: subscription.id,
+                    stripeCustomerId: subscription.customer as string,
+                    stripePriceId: subscription.items.data[0]?.price.id,
+                    stripeCurrentPeriodEnd: new Date(
+                        subscription.current_period_end * 1000
+                    ),
+                }, }  
+              );
+        // await User.updateOne(
+        //     {
+        //         kinde_id: session.metadata.userId,
+        //     },
+        //     {
+        //         stripeSubscriptionId: subscription.id,
+        //         stripeCustomerId: subscription.customer as string,
+        //         stripePriceId: subscription.items.data[0]?.price.id,
+        //         stripeCurrentPeriodEnd: new Date(
+        //             subscription.current_period_end * 1000
+        //         ),
+        //     },
+        // )
     }
 
     if (event.type === 'invoice.payment_succeeded') {
@@ -59,18 +70,16 @@ export async function POST(request: Request) {
             await stripe.subscriptions.retrieve(
                 session.subscription as string
             )
-
-        await User.updateOne(
-            {
-                stripeSubscriptionId: subscription.id,
-            },
-            {
-                stripePriceId: subscription.items.data[0]?.price.id,
-                stripeCurrentPeriodEnd: new Date(
-                    subscription.current_period_end * 1000
-                ),
-            },
-        )
+            await db.collection('users').updateOne(
+                { stripeSubscriptionId: subscription.id, }, // Filter
+                { $set:  {
+                    stripePriceId: subscription.items.data[0]?.price.id,
+                    stripeCurrentPeriodEnd: new Date(
+                        subscription.current_period_end * 1000
+                    ),
+                }, }  
+              );
+       
     }
 
     return new Response(null, { status: 200 })
