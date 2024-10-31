@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-        instrumentationHook: true,
-    },
+    
     async redirects() {
         return [
           {
@@ -25,6 +23,16 @@ const nextConfig = {
         config.resolve.alias.canvas = false
         config.resolve.alias.encoding = false
         return config
+      },
+      images: {
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'gravatar.com',
+            port: '',
+            pathname: '/dashboard',
+          },
+        ],
       },
 };
 
