@@ -67,7 +67,7 @@ const Navbar = async() => {
                   name={
                     !user.given_name || !user.family_name
                       ? 'Your Account'
-                      : `${user.given_name} ${user.family_name}`
+                      : `${user.given_name}`
                   }
                   email={user.email ?? ''}
                   imageUrl={user.picture ?? ''}

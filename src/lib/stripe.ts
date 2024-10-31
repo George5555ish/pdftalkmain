@@ -1,5 +1,6 @@
 import { PLANS } from '@/config/stripe'
 import User from '@/db/User.model'
+import { trpcDbUtils } from '@/trpc/utils'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import Stripe from 'stripe'
 
@@ -30,9 +31,7 @@ if (!user) {
     }
   }
 
-  const dbUser = await User.findOne({ 
-    kinde_id: user.id 
-  })
+  const dbUser = await trpcDbUtils.findOneUser(user.id)
 
   if (!dbUser) {
     return {
