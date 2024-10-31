@@ -50,7 +50,7 @@ const DashboardComponent = ({subscriptionPlan,user}: PageProps) => {
     <main className='mx-auto max-w-7xl md:p-10'>
 
         <div className='flex flex-row items-center font-bold text-blue-500' style={{fontFamily: 'cursive'}}>
-            <h2>Hello, </h2> <span className="pl-1">{user.given_name}</span>
+            {/* <h2>Hello, </h2> <span className="pl-1">{user.given_name}</span> */}
         </div>
       <div className='mt-4 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0'>
         <h1 className='mb-3 font-bold text-5xl text-gray-900'>
