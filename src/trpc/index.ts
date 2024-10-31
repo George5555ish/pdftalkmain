@@ -46,17 +46,15 @@ export const appRouter = router({
     return { success: true }
   }),
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
-    const { userId } = ctx //kinde id is here, not _id
-
-    const { db } = await connectToDatabase()
-    return await trpcDbUtils.findAllFiles()
+    const { userId } = ctx //kinde id is here, not _id 
+ 
+    return await trpcDbUtils.findAllFiles(userId)
   }),
 
 
   createStripeSession: privateProcedure.mutation(
     async ({ ctx }) => {
-      const { userId } = ctx
-      const { db } = await connectToDatabase()
+      const { userId } = ctx 
       const billingUrl = absoluteUrl('/dashboard/billing')
 
       if (!userId)
@@ -126,8 +124,7 @@ export const appRouter = router({
         userId,
       })
 
-      if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
-      const { db } = await connectToDatabase()
+      if (!file) throw new TRPCError({ code: 'NOT_FOUND' }) 
       const messages = await trpcDbUtils.findAndSortAndLimit( fileId, limit)
 
       let nextCursor: typeof cursor | undefined = undefined
@@ -144,8 +141,7 @@ export const appRouter = router({
 
   getFileUploadStatus: privateProcedure
     .input(z.object({ fileId: z.string() }))
-    .query(async ({ input, ctx }) => {
-      const { db } = await connectToDatabase()
+    .query(async ({ input, ctx }) => { 
       const file = await trpcDbUtils.findOneFile(
         
         input.fileId,
@@ -159,8 +155,7 @@ export const appRouter = router({
   getFile: privateProcedure
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx
-      const { db } = await connectToDatabase()
+      const { userId } = ctx 
       const file = await trpcDbUtils.findOneFileByKey(
         input.key,
         userId,
