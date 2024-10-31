@@ -14,11 +14,8 @@ import { trpcDbUtils } from '@/trpc/utils'
 const Navbar = async() => {
   const { getUser } = getKindeServerSession()
   const user = await getUser() 
-  if (!user || !user.id) redirect('/auth-callback?origin=dashboard')
-
-  const dbUser = await trpcDbUtils.findOneUser(user.id)
-
-  if (!dbUser) redirect('/auth-callback?origin=dashboard')
+  if (!user || !user.id) redirect('/')
+ 
  
 
   return (
@@ -72,9 +69,9 @@ const Navbar = async() => {
 
                 <UserAccountNav
                   name={
-                    !dbUser.given_name 
+                    !user.given_name 
                       ? 'Your Account'
-                      : `${dbUser.given_name}`
+                      : `${user.given_name}`
                   }
                   email={user.email ?? ''}
                   imageUrl={user.picture ?? ''}
