@@ -33,6 +33,8 @@ if (!user) {
 
   const dbUser = await trpcDbUtils.findOneUser(user.id)
 
+  console.log('dbUser from get user sub')
+  console.log(dbUser)
   if (!dbUser) {
     return {
       ...PLANS[0],
