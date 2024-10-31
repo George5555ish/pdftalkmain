@@ -3,6 +3,11 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import Image from 'next/image'
+import {
+  LoginLink,
+  RegisterLink,
+  getKindeServerSession,
+} from '@kinde-oss/kinde-auth-nextjs/server'
 export default function Home() {
   return (
     <>
@@ -17,22 +22,19 @@ export default function Home() {
           <span className='text-blue-600'>documents</span>{' '}
           in seconds.
         </h1>
-        <p className='mt-5 max-w-prose text-zinc-700 sm:text-lg'>
+        <p className='my-5 max-w-prose text-zinc-700 sm:text-lg'>
           PdfTalk allows you to have conversations with any
           PDF document. Simply upload your file and start
           asking questions right away.
         </p>
 
-        <Link
-          className={buttonVariants({
-            size: 'lg',
-            className: 'mt-5 bg-black',
-          })}
-          href='/dashboard'
-          target='_blank'>
-          Get started{' '}
-          <ArrowRight className='ml-2 h-5 w-5' />
-        </Link>
+        <RegisterLink
+                  className={buttonVariants({
+                    size: 'lg',
+                  })}>
+                  Get started{' '}
+                  <ArrowRight className='ml-1.5 h-5 w-5' />
+                </RegisterLink>
       </MaxWidthWrapper>
 
       {/* value proposition section */}
