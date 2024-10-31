@@ -27,7 +27,7 @@ const BillingForm = ({
   const { toast } = useToast()
 
 //   let isLoading = false;
-  const { mutate: createStripeSession, isPending } =
+  const { mutate: createStripeSession,   } =
 //   const { mutate: createStripeSession,   } =
     trpc.createStripeSession.useMutation({
       onSuccess: ({ url }) => {
@@ -60,14 +60,14 @@ const BillingForm = ({
           </CardHeader>
 
           <CardFooter className='flex flex-col items-start space-y-2 md:flex-row md:justify-between md:space-x-0'>
-            <Button type='submit'>
+            {/* <Button type='submit'>
               {isPending ? (
                 <Loader2 className='mr-4 h-4 w-4 animate-spin' />
               ) : null}
               {subscriptionPlan.isSubscribed
                 ? 'Manage Subscription'
                 : 'Upgrade to PRO'}
-            </Button>
+            </Button> */}
 
             {subscriptionPlan.isSubscribed ? (
               <p className='rounded-full text-xs font-medium'>
