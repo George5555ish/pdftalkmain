@@ -7,6 +7,7 @@ export async function POST(request: Request) {
     const body = await request.text()
     const signature = headers().get('Stripe-Signature') ?? ''
 
+    console.log('the stripe webhook was called at least')
     const {db} = await connectToDatabase()
     let event: Stripe.Event
 
@@ -34,6 +35,8 @@ export async function POST(request: Request) {
     }
 
     if (event.type === 'checkout.session.completed') {
+        
+    console.log('checkout event type handled')
         const subscription =
             await stripe.subscriptions.retrieve(
                 session.subscription as string
@@ -66,6 +69,7 @@ export async function POST(request: Request) {
 
     if (event.type === 'invoice.payment_succeeded') {
         // Retrieve the subscription details from Stripe.
+        console.log('invoice event type handled')
         const subscription =
             await stripe.subscriptions.retrieve(
                 session.subscription as string

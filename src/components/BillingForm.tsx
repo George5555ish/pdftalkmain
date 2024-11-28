@@ -27,8 +27,7 @@ const BillingForm = ({
   const { toast } = useToast()
 
 //   let isLoading = false;
-  const { mutate: createStripeSession,  isPending } =
-//   const { mutate: createStripeSession,   } =
+  const { mutate: createStripeSession,  isPending } = 
     trpc.createStripeSession.useMutation({
       onSuccess: ({ url }) => {
         if (url) window.location.href = url
@@ -73,7 +72,7 @@ const BillingForm = ({
               <p className='rounded-full text-xs font-medium'>
                 {subscriptionPlan.isCanceled
                   ? 'Your plan will be canceled on '
-                  : 'Your plan renews on'}
+                  : 'Your plan renews on '}
                 {format(
                   subscriptionPlan.stripeCurrentPeriodEnd!,
                   'dd.MM.yyyy'
