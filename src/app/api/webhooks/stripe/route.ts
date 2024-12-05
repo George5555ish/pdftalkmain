@@ -4,10 +4,11 @@ import type Stripe from 'stripe'
 import connectToDatabase from '@/db';
 
 export async function POST(request: Request) {
+    console.log('the stripe webhook was called at least')
     const body = await request.text()
     const signature = headers().get('Stripe-Signature') ?? ''
 
-    console.log('the stripe webhook was called at least')
+
     const {db} = await connectToDatabase()
     let event: Stripe.Event
 
