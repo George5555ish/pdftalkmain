@@ -19,3 +19,5 @@ Please note the following when deploying to production:
 * Test webhooks for updating db when user makes payment for a plan.
 
 * Check the db and ensure only select IPs can access it (not from anywhere)
+
+* Demo: https://pdftalkmain.vercel.app/
